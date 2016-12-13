@@ -23,7 +23,7 @@ ENV MYSQL_ROOT=root MYSQL_ROOT_PASSWORD=mysql MYSQL_REPLICATION_USER=replication
 
 COPY docker-entrypoint.sh /usr/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 EXPOSE 3306
-CMD ["maxscale --config=/etc/maxscale.cnf --nodaemon"]
+CMD ["maxscale", "--config=/etc/maxscale.cnf", "--nodaemon"]
