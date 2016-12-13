@@ -27,6 +27,8 @@ cat <<EOF >> "$tmp_file"
 threads=1
 log_info=1
 log_debug=1
+syslog=0
+maxlog=1
 
 EOF
 

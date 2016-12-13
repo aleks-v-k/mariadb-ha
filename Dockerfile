@@ -26,4 +26,4 @@ RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 EXPOSE 3306
-CMD ["maxscale", "--config=/etc/maxscale.cnf", "--nodaemon"]
+CMD ["maxscale", "--config=/etc/maxscale.cnf", "--nodaemon", "--log=stdout"]
