@@ -15,7 +15,7 @@ fi
 
 if [ "$result" != "1" ]; then
     echo "Creating replication user on $master"
-    $mysql_cmd -h$master -e "GRANT replication slave ON *.* TO \"$MYSQL_REPLICATION_USER\"@'%' IDENTIFIED BY \"MYSQL_REPLICATION_PASSWORD\""
+    $mysql_cmd -h$master -e "GRANT replication slave ON *.* TO \"$MYSQL_REPLICATION_USER\"@'%' IDENTIFIED BY \"$MYSQL_REPLICATION_PASSWORD\""
     # set first server as master for all another nodes
     for node in ${nodes_arr[@]:1}; do
         echo "Setting a slave $node for master $master"
