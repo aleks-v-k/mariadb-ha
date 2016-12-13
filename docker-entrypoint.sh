@@ -18,7 +18,7 @@ sed -i "s/RPL_PASSWORD/$MYSQL_REPLICATION_USER/" "$mrm_config"
 # Generate maxscale config
 maxscale_conf=/etc/maxscale.cnf
 # heading for config. Should contain entry for each server in cluster
-tmp_file=$(mktemp /tmp/maxscale.heading)
+tmp_file=$(mktemp /tmp/maxscale.heading.XXXX)
 
 # TODO: adjust with available cores
 cat <<EOF >> "$tmp_file"
@@ -53,7 +53,7 @@ done
 
 cat "$maxscale_conf" >> "$tmp_file"
 
-cp "$tmp_file" "$maxscale_conf"
+cp -f "$tmp_file" "$maxscale_conf"
 rm -f "$tmp_file"
 
 sed -i "s/MYSQL_SERVERS/$servers/g" "$maxscale_conf"
