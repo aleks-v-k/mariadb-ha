@@ -2,11 +2,10 @@
 
 user=root:mysql
 repluser=replication:replication
-log=~/process_repl.log
 
 repl_manager_cmd="replication-manager --user=$user --rpluser=$repluser"
 start_slave_cmd="/opt/bin/start_slave.sh"
-echo "Calling $@" >> $log
+echo "Calling $@"
 
 ARGS=$(getopt -o '' --long 'event:,initiator:,nodelist:,masterlist:,' -- "$@")
 
@@ -46,7 +45,7 @@ initiator_host=${initiator%:*}
 
 if [ "$event" == "server_up" ]; then
     # drop port part
-    echo "Masterlist: $masterlist" >> $log
+    echo "Masterlist: $masterlist"
     master=${masterlist%:*}
     new_server=$initiator_host
     first_live_node=${nodelist%:*}
@@ -54,20 +53,20 @@ if [ "$event" == "server_up" ]; then
     if [ -z "$master" ]; then
         master=$first_live_node
     fi
-    echo "Calling $start_slave_cmd $master $new_server" >> $log
-    $start_slave_cmd $master $new_server 2>&1 >> $log
+    echo "Calling $start_slave_cmd $master $new_server"
+    $start_slave_cmd $master $new_server 2>&1
 elif [ "$event" == "master_down" ]; then
     # if there is only one node alive, make it a master in 
     # node_arr=(${nodelist//,/ })
     rm -f /tmp/mrm.state
-    $repl_manager_cmd failover --hosts="$initiator,$nodelist" 2>&1 >> $log
+    $repl_manager_cmd failover --hosts="$initiator,$nodelist" 2>&1
     # if [ "1" -eq "${#node_arr[@]}" ]; then
     #     # maxadmin set server ${node_arr[0]} master
     # fi
 elif [ "$event" == "master_up" ]; then
-    echo "master_up: Master list: $masterlist" >> $log
-    echo "master_up: initiator_host: $initiator_host" >> $log
-    echo "master_up: nodelist: $nodelist" >> $log
+    echo "master_up: Master list: $masterlist"
+    echo "master_up: initiator_host: $initiator_host"
+    echo "master_up: nodelist: $nodelist"
     node_arr=(${nodelist//,/ })
     master_arr=(${masterlist//,/ })
     new_master=$initiator_host
@@ -77,8 +76,8 @@ elif [ "$event" == "master_up" ]; then
             if [ "$master" != "$new_master" ]; then
                 master=${master%:*}
                 new_master=${new_master%:*}
-                echo "Calling $start_slave_cmd $master $new_master" >> $log
-                $start_slave_cmd $master $new_master 2>&1 >> $log
+                echo "Calling $start_slave_cmd $master $new_master"
+                $start_slave_cmd $master $new_master 2>&1
                 break
             fi
         done
