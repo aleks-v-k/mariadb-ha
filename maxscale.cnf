@@ -43,11 +43,11 @@
 
 [Replication monitor]
 type=monitor
-module=mysqlmon
+module=mmmon
 servers=MYSQL_SERVERS
 user=MYSQL_USER
 passwd=MYSQL_PASSWORD
-monitor_interval=2000
+monitor_interval=1000
 backend_connect_timeout=4
 # live_nodes=$NODELIST
 script=/opt/bin/process_maxscale_events.sh --event $EVENT --initiator $INITIATOR --nodelist $NODELIST --masterlist $MASTERLIST

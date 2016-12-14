@@ -6,9 +6,9 @@ RUN rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 RUN yum -y install wget && wget https://downloads.mariadb.com/MaxScale/2.0.2/rhel/7/x86_64/maxscale-2.0.2-1.rhel.7.x86_64.rpm \
     && yum -y install maxscale-2.0.2-1.rhel.7.x86_64.rpm
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
-RUN yum -y install mariadb \
-    && wget https://github.com/tanji/replication-manager/releases/download/0.7.0-rc3/replication-manager-0.7.0-6e390e0.x86_64.rpm \
-    && yum -y install replication-manager-0.7.0-6e390e0.x86_64.rpm
+RUN yum -y install mariadb
+RUN mkdir -p /opt/bin && wget -O /opt/bin/replication-manager https://github.com/aleks-v-k/mariadb-ha/releases/download/mrm-latest-01/replication-manager \
+    && chmod +x /opt/bin/replication-manager
 
 COPY process_maxscale_events.sh /opt/bin/
 COPY start_slave.sh /opt/bin/

@@ -3,7 +3,7 @@
 user=root:mysql
 repluser=replication:replication
 
-repl_manager_cmd="replication-manager --user=$user --rpluser=$repluser"
+repl_manager_cmd="/opt/bin/replication-manager --user=$user --rpluser=$repluser"
 start_slave_cmd="/opt/bin/start_slave.sh"
 echo "Calling $@"
 
@@ -64,6 +64,14 @@ elif [ "$event" == "master_down" ]; then
     # if [ "1" -eq "${#node_arr[@]}" ]; then
     #     # maxadmin set server ${node_arr[0]} master
     # fi
+    # TODO: bug. In docker container environment monitor (mmon or mysqlmon)
+    # hangs when a master is failed and only one slave node is live.
+    # We recover this by reloading monitor.
+    node_arr=(${nodelist//,/ })
+    if [ "1" -eq "${#node_arr[@]}" ]; then
+        echo 'maxadmin restart monitor "Replication monitor"'
+        maxadmin restart monitor "Replication monitor" &
+    fi
 elif [ "$event" == "master_up" ]; then
     echo "master_up: Master list: $masterlist"
     echo "master_up: initiator_host: $initiator_host"
