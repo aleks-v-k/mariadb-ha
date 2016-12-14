@@ -41,9 +41,9 @@
 # MySQL Monitor documentation:
 # https://github.com/mariadb-corporation/MaxScale/blob/master/Documentation/Monitors/MySQL-Monitor.md
 
-[MySQL Monitor]
+[Replication monitor]
 type=monitor
-module=mmmon
+module=mysqlmon
 servers=MYSQL_SERVERS
 user=MYSQL_USER
 passwd=MYSQL_PASSWORD
@@ -52,7 +52,8 @@ backend_connect_timeout=4
 # live_nodes=$NODELIST
 script=/opt/bin/process_maxscale_events.sh --event $EVENT --initiator $INITIATOR --nodelist $NODELIST --masterlist $MASTERLIST
 events=master_down,server_up,master_up
-detect_stale_master=1
+detect_stale_master=true
+detect_replication_lag=true
 
 # Service definitions
 #
@@ -83,6 +84,7 @@ passwd=MYSQL_PASSWORD
 max_slave_connections=100%
 router_options=master_accept_reads=true
 enable_root_user=1
+max_slave_replication_lag=30
 
 # This service enables the use of the MaxAdmin interface
 # MaxScale administration guide:

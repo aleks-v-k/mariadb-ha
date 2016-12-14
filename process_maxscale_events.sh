@@ -59,6 +59,7 @@ elif [ "$event" == "master_down" ]; then
     # if there is only one node alive, make it a master in 
     # node_arr=(${nodelist//,/ })
     rm -f /tmp/mrm.state
+    echo "Running: $repl_manager_cmd failover --hosts=$initiator,$nodelist"
     $repl_manager_cmd failover --hosts="$initiator,$nodelist" 2>&1
     # if [ "1" -eq "${#node_arr[@]}" ]; then
     #     # maxadmin set server ${node_arr[0]} master

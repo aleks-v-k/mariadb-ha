@@ -29,6 +29,7 @@ log_info=1
 log_debug=1
 syslog=0
 maxlog=1
+auth_connect_timeout=2
 
 EOF
 
