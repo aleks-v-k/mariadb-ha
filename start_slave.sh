@@ -23,7 +23,7 @@ CHANGE MASTER TO master_host='$MASTER_HOST',
 	master_user='${MYSQL_REPLICATION_USER}',
 	master_password='${MYSQL_REPLICATION_PASSWORD}',
 	master_port=3306,
-	master_use_gtid=current_pos;
+	master_use_gtid=slave_pos;
 
 START SLAVE;
 SET GLOBAL read_only=ON;
