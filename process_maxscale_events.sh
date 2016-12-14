@@ -5,8 +5,8 @@ repluser=replication:replication
 log=~/process_repl.log
 
 repl_manager_cmd="replication-manager --user=$user --rpluser=$repluser"
-start_slave_cmd="/root/start_slave.sh"
-echo "Calling $@" >> ~/process_repl.log
+start_slave_cmd="/opt/bin/start_slave.sh"
+echo "Calling $@" >> $log
 
 ARGS=$(getopt -o '' --long 'event:,initiator:,nodelist:,masterlist:,' -- "$@")
 
