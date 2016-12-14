@@ -82,9 +82,9 @@ elif [ "$event" == "master_up" ]; then
     # If we have more that one master, then make new master as slave for another one
     if [ "1" -lt "${#master_arr[@]}" ]; then
         for master in "${master_arr[@]}"; do
+            master=${master%:*}
             if [ "$master" != "$new_master" ]; then
-                master=${master%:*}
-                new_master=${new_master%:*}
+                # new_master=${new_master%:*}
                 echo "Calling $start_slave_cmd $master $new_master"
                 $start_slave_cmd $master $new_master 2>&1
                 break
