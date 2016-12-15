@@ -1,10 +1,17 @@
 #!/bin/bash
+# It does:
+# * set proper replication manager config according to environment variables;
+# * set proper maxscale config based on template end environment variables;
+# * initialize mysql cluster (create replica user, start slaves);
+# * start maxscale in foreground.
 set -eo pipefail
 shopt -s nullglob
 
-
+# Initialize mysql cluster: create replica user and start slaves.
 /opt/bin/init_mysql_cluster.sh
 
+
+# Generate replication manager config
 mrm_config=/etc/replication-manager/config.toml
 mrm_config_template=/etc/replication-manager/config.toml.template
 cp "$mrm_config_template" "$mrm_config"

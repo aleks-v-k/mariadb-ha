@@ -1,4 +1,16 @@
 #!/bin/bash
+# The script creates replication user and starts slaves in a cluster.
+# It uses environment variables:
+# * MYSQL_NODES - comma separated list of mysql cluster nodes;
+# * MYSQL_ROOT, MYSQL_ROOT_PASSWORD - credentials of mysql root user;
+# * MYSQL_REPLICATION_USER, MYSQL_REPLICATION_PASSWORD - credentials of mysql
+#   replication user;
+# Firstly it checks if the replication user already exists. If it is not, then
+# the script assumes, the cluster is not initialized, so it creates replication
+# user on first node from MYSQL_NODES list, and makes this node as a master
+# for all other nodes.
+# It checks server's readiness 60 times with 1 second sleep between retries,
+# before performing actions.
 
 MYSQL_NODES=${MYSQL_NODES:-10.0.0.1}
 
@@ -9,7 +21,7 @@ mysql_cmd="mysql -u $MYSQL_ROOT -p$MYSQL_ROOT_PASSWORD"
 
 wait_for_server_ready() {
     server="$1"
-	for i in {30..0}; do
+	for i in {60..0}; do
 		if echo 'SELECT 1' | $mysql_cmd -h$server &> /dev/null; then
 			break
 		fi

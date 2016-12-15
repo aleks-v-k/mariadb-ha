@@ -43,13 +43,19 @@
 
 [Replication monitor]
 type=monitor
+# It should be mysqlmon, but it actually doesn't work as needed in case when
+# there are 2 node in a mysql cluster. If there is one master and one slave,
+# then after master fail the slave will be still a slave. But we need it is
+# switched as a new master. So we use multi-master monitor, it switches the
+# single slave as a new master. But there is a point in mmmon: when new mysql
+# server become available it treats it as a master, so we explicitly switching
+# it to a slave in process_maxscale_events.sh script.
 module=mmmon
 servers=MYSQL_SERVERS
 user=MYSQL_USER
 passwd=MYSQL_PASSWORD
 monitor_interval=1000
 backend_connect_timeout=4
-# live_nodes=$NODELIST
 script=/opt/bin/process_maxscale_events.sh --event $EVENT --initiator $INITIATOR --nodelist $NODELIST --masterlist $MASTERLIST
 events=master_down,server_up,master_up
 detect_stale_master=true
