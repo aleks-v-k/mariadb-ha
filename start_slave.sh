@@ -16,16 +16,36 @@ if [ -z "$MASTER_HOST" ]; then
 fi
 echo "Setting master to $MASTER_HOST on $TARGET_HOST"
 
+master_dump_file=$(/opt/bin/get_master_dump.sh "$MASTER_HOST" "$MYSQL_ROOT" "$MYSQL_ROOT_PASSWORD")
+if [ "$?" != 0 ]; then
+    echo "Failed to get master dump"
+    exit 1
+fi
+
+echo "Use master dump file $master_dump_file"
+
+echo "Stopping SLAVE on $TARGET_HOST"
 mysql -u $MYSQL_ROOT -h $TARGET_HOST -p$MYSQL_ROOT_PASSWORD <<-EOSQL
 STOP SLAVE;
+RESET MASTER;
+SET GLOBAL read_only=OFF;
+EOSQL
 
+echo "Loading dump $master_dump_file to $TARGET_HOST"
+mysql -u $MYSQL_ROOT -h $TARGET_HOST -p$MYSQL_ROOT_PASSWORD < "$master_dump_file"
+
+echo "Starting slave on $TARGET_HOST"
+mysql -u $MYSQL_ROOT -h $TARGET_HOST -p$MYSQL_ROOT_PASSWORD <<-EOSQL
+RESET SLAVE;
+
+SET GLOBAL read_only=ON;
 CHANGE MASTER TO master_host='$MASTER_HOST',
 	master_user='${MYSQL_REPLICATION_USER}',
 	master_password='${MYSQL_REPLICATION_PASSWORD}',
 	master_port=3306,
-	master_use_gtid=current_pos;
+	master_use_gtid=slave_pos;
 
 START SLAVE;
-SET GLOBAL read_only=ON;
 EOSQL
 
+echo "Slave started"

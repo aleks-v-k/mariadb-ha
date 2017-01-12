@@ -51,6 +51,7 @@ type=monitor
 # server become available it treats it as a master, so we explicitly switching
 # it to a slave in process_maxscale_events.sh script.
 module=mmmon
+# module=mysqlmon
 servers=MYSQL_SERVERS
 user=MYSQL_USER
 passwd=MYSQL_PASSWORD
@@ -59,7 +60,9 @@ backend_connect_timeout=4
 script=/opt/bin/process_maxscale_events.sh --event $EVENT --initiator $INITIATOR --nodelist $NODELIST --masterlist $MASTERLIST
 events=master_down,server_up,master_up
 detect_stale_master=true
-detect_replication_lag=true
+# detect_replication_lag=true
+# multimaster=true
+# failover=true
 
 # Service definitions
 #

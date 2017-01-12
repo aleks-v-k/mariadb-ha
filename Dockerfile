@@ -5,6 +5,10 @@ FROM centos:centos7
 RUN rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 RUN yum -y install wget && wget https://downloads.mariadb.com/MaxScale/2.0.2/rhel/7/x86_64/maxscale-2.0.2-1.rhel.7.x86_64.rpm \
     && yum -y install maxscale-2.0.2-1.rhel.7.x86_64.rpm
+# 2.0.3-1 periodically crashes with segmentation fault
+# RUN yum -y install wget && wget https://downloads.mariadb.com/MaxScale/2.0.3/rhel/7/x86_64/maxscale-2.0.3-1.rhel.7.x86_64.rpm \
+#     && yum -y install maxscale-2.0.3-1.rhel.7.x86_64.rpm
+
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 RUN yum -y install mariadb
 RUN mkdir -p /opt/bin && wget -O /opt/bin/replication-manager https://github.com/aleks-v-k/mariadb-ha/releases/download/mrm-latest-01/replication-manager \
@@ -15,6 +19,7 @@ COPY start_slave.sh /opt/bin/
 COPY maxscale.cnf /etc/
 COPY mrm-config.toml.template /etc/replication-manager/config.toml.template
 COPY init_mysql_cluster.sh /opt/bin/
+COPY get_master_dump.sh /opt/bin/
 
 
 ENV MYSQL_NODES 10.0.0.1,10.0.0.2
