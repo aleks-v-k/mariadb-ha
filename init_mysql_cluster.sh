@@ -143,10 +143,14 @@ echo "Remaining up nodes: ${up_nodes[@]}"
 echo "Selected master: $master"
 echo "Detected cluster state: initialized = $is_cluster_initialized"
 
+# Rest selected master if it was a slave earlier
+echo "Resetting slave on master..."
+$mysql_cmd -h$master -e "STOP SLAVE; RESET SLAVE ALL;"
+
 
 if [ "$is_cluster_initialized" != "yes" ]; then
     echo "Creating replication user on $master"
-    $mysql_cmd -h$master -e "GRANT replication slave ON *.* TO \"$MYSQL_REPLICATION_USER\"@'%' IDENTIFIED BY \"$MYSQL_REPLICATION_PASSWORD\""
+    $mysql_cmd -h$master -e "GRANT replication slave ON *.* TO \"$MYSQL_REPLICATION_USER\"@'%' IDENTIFIED BY \"$MYSQL_REPLICATION_PASSWORD\" ; FLUSH PRIVILEGES;"
 fi
 
 # set master for all another nodes

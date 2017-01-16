@@ -20,7 +20,8 @@ DUMP_FILE_LIFETIME=$((60 * 6))
 dump_filename="${MASTER_DUMP_DIR}/${master_host}.sql"
 
 if [ ! -f "$dump_filename" ] || [ $(stat --format=%Y $dump_filename) -le $((`date +%s` - $DUMP_FILE_LIFETIME)) ]; then
-  mysqldump --all-databases --add-drop-database --opt --single-transaction --gtid --master-data=1 -h "$master_host" -u "$user" -p"$password" > "$dump_filename" || exit 1
+  echo "SET @@SESSION.SQL_LOG_BIN=0;" > "$dump_filename"
+  mysqldump --all-databases --add-drop-database --opt --single-transaction --gtid --master-data=1 --flush-logs --flush-privileges -h "$master_host" -u "$user" -p"$password" >> "$dump_filename" || exit 1
 fi
 
 # remove dumps from previous masters

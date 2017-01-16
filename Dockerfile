@@ -1,11 +1,13 @@
 # vim:set ft=dockerfile:
-FROM centos:centos7
+FROM centos:7
+# FROM centos:centos7
 
 
 RUN rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 RUN yum -y install wget && wget https://downloads.mariadb.com/MaxScale/2.0.2/rhel/7/x86_64/maxscale-2.0.2-1.rhel.7.x86_64.rpm \
     && yum -y install maxscale-2.0.2-1.rhel.7.x86_64.rpm
-# 2.0.3-1 periodically crashes with segmentation fault
+# 2.0.3-1 periodically crashes with segmentation fault (2.0.2 also has
+# segfaults, but it occurs less often)
 # RUN yum -y install wget && wget https://downloads.mariadb.com/MaxScale/2.0.3/rhel/7/x86_64/maxscale-2.0.3-1.rhel.7.x86_64.rpm \
 #     && yum -y install maxscale-2.0.3-1.rhel.7.x86_64.rpm
 

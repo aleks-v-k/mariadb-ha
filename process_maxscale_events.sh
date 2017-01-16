@@ -59,8 +59,8 @@ if [ "$event" == "server_up" ] || [ "$event" == "slave_up" ]; then
     if [ -z "$master" ]; then
         echo "Running $repl_manager_cmd failover --hosts=$nodelist"
         $repl_manager_cmd failover --hosts="$nodelist" 2>&1
-        echo 'maxadmin restart monitor "Replication monitor"'
-        maxadmin restart monitor "Replication monitor" &
+        # echo 'maxadmin restart monitor "Replication monitor"'
+        # maxadmin restart monitor "Replication monitor" &
     else
         echo "Calling $start_slave_cmd $master $new_server"
         $start_slave_cmd "$master" "$new_server" 2>&1
@@ -75,12 +75,12 @@ elif [ "$event" == "master_down" ]; then
     #     # maxadmin set server ${node_arr[0]} master
     # fi
     # TODO: bug. In docker container environment monitor (mmon or mysqlmon)
-    # hangs when a master is failed and only one slave node is live.
+    # hangs when a master is failed and only one slave node is alive.
     # We recover this by reloading monitor.
     node_arr=(${nodelist//,/ })
     #if [ "1" -eq "${#node_arr[@]}" ]; then
-    echo 'maxadmin restart monitor "Replication monitor"'
-    maxadmin restart monitor "Replication monitor" &
+    # echo 'maxadmin restart monitor "Replication monitor"'
+    # maxadmin restart monitor "Replication monitor" &
     #fi
 elif [ "$event" == "master_up" ]; then
     echo "master_up: Master list: $masterlist"
@@ -101,3 +101,9 @@ elif [ "$event" == "master_up" ]; then
         done
     fi
 fi
+
+# Maxscale will hang in some cases, for example if there is two servers
+# master-slave and the master is down. Monitor restart resolves the problem,
+# but there are random segfaults with this.
+echo 'maxadmin restart monitor "Replication monitor"'
+maxadmin restart monitor "Replication monitor" &
